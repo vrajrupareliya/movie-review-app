@@ -77,7 +77,7 @@ const generateAccessandRefrshToken = (async(userId) => {
         throw new ApiError(400, "avatar filed is reqired")
   }
 
-  const user =await User.create({
+  const user = await User.create({
     fullname,
     avatar: avatar.url,
     coverImage: coverImage?.url || "",

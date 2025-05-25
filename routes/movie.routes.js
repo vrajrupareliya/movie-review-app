@@ -3,8 +3,12 @@ import { searchMoviesController,
   getMovieDetailsController,
   getPopularMoviesController, } from "../controllers/movie.controllers.js";
 
+import REVIEW_ROUTER from "./review.routes.js";
 
 const router = Router();
+
+router.use('/:movieId/reviews', REVIEW_ROUTER);
+
 
 // Route to search for movies in our DB
 router.route("/search").get(searchMoviesController); // e.g., /api/movies/search?query=dark

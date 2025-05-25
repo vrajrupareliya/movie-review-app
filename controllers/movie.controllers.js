@@ -31,7 +31,9 @@ const getMovieDetailsController = asynchandler(async (req, res) => {
     if (!data) {
         return next(new ApiError(404, 'Movie not found with that ID'));
     }
-    res.status(200).json(new ApiResponse(200, data, 'Movie fetched successfully'));
+    res.status(200).json(
+      new ApiResponse(200, data, 'Movie fetched successfully')
+    );
   } catch (error) {
     // This will catch invalid MongoDB ObjectId errors as well
     next(error);
@@ -42,10 +44,11 @@ const getMovieDetailsController = asynchandler(async (req, res) => {
 const getPopularMoviesController = asynchandler(async (req, res) => {
   try {
     const data = await getPopularMovies();
-    res.status(200).json(new ApiResponse(200, data, 'Popular movies fetched successfully'));
+    res.status(200).json(
+      new ApiResponse(200, data, 'Popular movies fetched successfully')
+    );
   } catch (error) {
-    
-next(error);
+    next(error);
   }
 });
 
