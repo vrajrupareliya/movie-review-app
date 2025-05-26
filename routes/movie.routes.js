@@ -7,7 +7,7 @@ import REVIEW_ROUTER from "./review.routes.js";
 
 const router = Router();
 
-router.use('/:movieId/reviews', REVIEW_ROUTER);
+router.use('/reviews', REVIEW_ROUTER);
 
 
 // Route to search for movies in our DB

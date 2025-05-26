@@ -36,7 +36,7 @@ reviewSchema.index({ Movie: 1, User: 1 }, { unique: true });
 
 
 // Static method to calculate the average rating for a movie
-reviewSchema.statics.calculateAverageRating = async function(movieId) {
+reviewSchema.statics.calculateAverageRating =asynchandler( async function(movieId) {
   // 1. Log when the function is called
   console.log(`[Hook] Calculating average rating for movie ID: ${movieId}`);
 
@@ -83,7 +83,7 @@ reviewSchema.statics.calculateAverageRating = async function(movieId) {
     // 5. Log any error that occurs during the process
     console.error('[Hook] Error during rating calculation:', err);
   }
-};
+});
 
 // Hook to call calculateAverageRating after a review is saved
 reviewSchema.post('save', function() {

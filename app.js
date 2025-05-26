@@ -31,5 +31,8 @@ import movieRouter from "./routes/movie.routes.js";
 //routes decalaration
 app.use("/api/v1/movies",movieRouter)
 
+//import REVIEW_ROUTER from "./routes/review.routes.js";
 
+// For general review operations like getting ALL reviews or a review by its direct ID
+//app.use('/api/v1/reviews', REVIEW_ROUTER); // Mount reviewRouter at the top level
 export { app }

@@ -25,7 +25,7 @@ const searchMoviesController = asynchandler(async (req, res) => {
 });
 
 // Get movie details controller
-const getMovieDetailsController = asynchandler(async (req, res) => {
+const getMovieDetailsController = asynchandler(async (req, res, next) => {
   try {
     const data = await getMovieDetails(req.params.id);
     if (!data) {
@@ -34,9 +34,9 @@ const getMovieDetailsController = asynchandler(async (req, res) => {
     res.status(200).json(
       new ApiResponse(200, data, 'Movie fetched successfully')
     );
-  } catch (error) {
-    // This will catch invalid MongoDB ObjectId errors as well
-    next(error);
+  } catch (err) {
+    console.error('Error in getMovieDetailsController:', err);
+    throw new ApiError(500, 'Server Error');
   }
 });
 
@@ -47,8 +47,9 @@ const getPopularMoviesController = asynchandler(async (req, res) => {
     res.status(200).json(
       new ApiResponse(200, data, 'Popular movies fetched successfully')
     );
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    console.error('Error in getPopularMoviesController:', err);
+    throw new ApiError(500, 'Server Error');
   }
 });
 
