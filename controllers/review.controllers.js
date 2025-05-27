@@ -119,9 +119,6 @@ const getReview = asynchandler( async (req, res, next) => {
 });
 
 
-
-
-
 /**
  * @desc    Add a new review to a movie
  * @route   POST /api/v1/movies/:movieId/reviews
@@ -144,6 +141,14 @@ const addReview = asynchandler( async (req, res, next) => {
     }
 
     const review = await Review.create(req.body);
+
+    // --- NEW: Remove movie from watchlist after reviewing ---
+    // We use the $pull operator to remove an item from an array in MongoDB.
+    // This is an atomic operation and very efficient.
+    await User.findByIdAndUpdate(req.user.id, {
+      $pull: { watchlist: req.params.movieId }
+    });
+    console.log(`Attempted to remove movie ${req.params.movieId} from user ${req.user.id}'s watchlist.`);
 
     res.status(201).json(
       new ApiResponse(201, {

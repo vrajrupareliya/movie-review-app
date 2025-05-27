@@ -28,20 +28,47 @@ const userSchema = new Schema({
             type: String,
             require: [true, 'paasword is required']
         },
-        avatar:{
+        profilePictureUrl:{
             type: String,
-            require: true,
+            default: 'https://placehold.co/200x200/60A5FA/FFFFFF?text=User' // Default placeholder
         },
         
         coverImage:{
             type: String,
+            default: 'https://placehold.co/200x200/60A5FA/FFFFFF?text=User' // Default placeholder
+
+        },
+        
+        location: {
+        type: String,
+        maxlength: 100,
+        default: ''
+
+    },
+        watchlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Movie' // References the Movie model
+        }],
+
+        followersCount: {
+        type: Number,
+        default: 0,
+        min: 0
+        },
+        
+        followingCount: {
+            type: Number,
+            default: 0,
+            min: 0
         },
 
         refreshToken:{
-            type: String
-        }
-    
+                    type: String
+        },
+        
+  // --- END NEW PROFILE FIELDS ---
     },
+    
 {
     timestamps: true
 }
