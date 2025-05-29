@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { User } from "../models/user.models.js";
 import { Review } from "../models/review.models.js";
 import { Movie } from "../models/movie.models.js";
+import { Follow } from "../models/follow.models.js";
 import { uplodeoncloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 
@@ -520,6 +521,81 @@ const getDiary = asynchandler(async (req, res, next) => {
   }
 });
 
+
+/*
+ * @desc    Get the activity feed for the logged-in user
+ * @route   GET /api/v1/users/me/feed
+ * @access  Private
+ */
+const getFeed = asynchandler(async (req, res, next) => {
+  try {
+    const loggedInUserId = req.user.id;
+
+    // 1. Find all users the current user is following
+    const followingRelationships = await Follow.find({ follower: loggedInUserId }).select('following');
+    
+    if (!followingRelationships || followingRelationships.length === 0) {
+      return res.status(200).json(
+        new ApiResponse(200,{
+        success: true,
+        message: "You are not following anyone yet. Follow users to see their activity.",
+        count: 0,
+        totalCount: 0,
+        data: []
+      })
+  );
+ }
+
+    // Extract the IDs of the users being followed
+    const followedUserIds = followingRelationships.map(rel => rel.following);
+
+    // 2. Find reviews from these followed users
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const startIndex = (page - 1) * limit;
+
+    // Filter reviews where the 'user' is in the list of followedUserIds
+    const feedQuery = { user: { $in: followedUserIds } };
+    
+    const totalFeedItems = await Review.countDocuments(feedQuery);
+
+    const feedItems = await Review.find(feedQuery)
+      .populate({
+        path: 'user', // User who wrote the review
+        select: 'username profilePictureUrl'
+      })
+      .populate({
+        path: 'movie', // Movie that was reviewed
+        select: 'title, posterUrl, releaseYear'
+      })
+      .sort({ createdAt: -1 }) // Newest activities first
+      .skip(startIndex)
+      .limit(limit);
+
+    const pagination = {};
+    if (startIndex > 0) { pagination.prev = { page: page - 1, limit }; }
+    if (page * limit < totalFeedItems) { pagination.next = { page: page + 1, limit }; }
+    const totalPages = Math.ceil(totalFeedItems / limit);
+
+    res.status(200).json(
+      new ApiResponse(200, {
+      message: 'Feed items fetched successfully',
+      success: true,
+      count: feedItems.length,
+      totalCount: totalFeedItems,
+      pagination,
+      currentPage: page,
+      totalPages,
+      data: feedItems
+    })
+  );
+
+  } catch (err) {
+    console.error('Error in getFeed:', err);
+    throw new ApiError(500,"Server Error");
+  }
+});
+
 export {
   registerUser,
   loginUser,
@@ -531,5 +607,7 @@ export {
   addToWatchlist,
   removeFromWatchlist,
   getWatchlist,
-  getDiary
+  getDiary,
+  getFeed
+
 }

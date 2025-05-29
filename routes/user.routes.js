@@ -9,7 +9,8 @@ import { loginUser,
     addToWatchlist,
     removeFromWatchlist,
     getWatchlist,
-    getDiary
+    getDiary,
+    getFeed
 } from "../controllers/user.controllers.js";
 
 import {followUser, 
@@ -48,13 +49,12 @@ router.route("/:userId/reviews").get(getUserReviews)
 
 // Private routes for the logged-in user
 router.route("/me/profile").get(verifyJWT, getMe) // Changed from /me to /me/profile for clarity
-
 router.route("/me/update").put(verifyJWT, updateUserProfile); // Changed from /me to /me/update
 
 router.route('/me/watchlist').get(verifyJWT, getWatchlist);
 router.route('/me/watchlist/:movieId').post(verifyJWT, addToWatchlist);
 router.route('/me/watchlist/:movieId').delete(verifyJWT, removeFromWatchlist);
-
+router.route('/me/feed').get(verifyJWT, getFeed); // Get the user's feed
 // diary route
 router.route('/me/diary').get(verifyJWT, getDiary);
 
