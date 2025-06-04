@@ -42,11 +42,11 @@ const generateAccessandRefrshToken = (async(userId) => {
         // creat user object , crea user entry in db
         // remove password and refreshtoken field from reponse
 
-    const {fullname, email, username, password,} = req.body
+    const { email, username, password,} = req.body
     console.log("email:", email);
 
     if (
-        [fullname, email ,username ,password].some((fields) => fields?.trim === "")
+        [ email ,username ,password].some((fields) => fields?.trim === "")
     ) {
         throw new ApiError(400, "all fields are required")
     }
@@ -59,32 +59,31 @@ const generateAccessandRefrshToken = (async(userId) => {
         throw new ApiError(409, "Username or Email existed")
    }
 
-   const profilePictureUrlLocalPath = req.files?.avatar[0]?.path;
+   //const profilePictureUrlLocalPath = req.files?.avatar[0]?.path;
    //const coverImagelocalpath = req.files?.coverImage[0]?.path;
    
-   let coverImagelocalpath;
-   if (req.files && Array.isArray(req.files.coverImage) && req.fields.coverImage.lenght > 0) {
-      coverImagelocalpath = req.files.coverImage[0].path
-   }
+   //let coverImagelocalpath;
+   //if (req.files && Array.isArray(req.files.coverImage) && req.fields.coverImage.lenght > 0) {
+   //   coverImagelocalpath = req.files.coverImage[0].path
+   //}
 
    console.log(":", req.files);
 
-   if (!profilePictureUrlLocalPath) {
+   /*if (!profilePictureUrlLocalPath) {
         throw new ApiError(400, "profile picture file is reqiured")
-   }
+   }*/
 
 
-  const profilePictureUrl = await uplodeoncloudinary(profilePictureUrlLocalPath)
+  /*const profilePictureUrl = await uplodeoncloudinary(profilePictureUrlLocalPath)
   const coverImage = await uplodeoncloudinary(coverImagelocalpath)
 
   if (!profilePictureUrl) {
         throw new ApiError(400, "profile picture filed is reqired")
   }
-
+*/
   const user = await User.create({
-    fullname,
-    profilePictureUrl: profilePictureUrl.url,
-    coverImage: coverImage?.url || "",
+    //profilePictureUrl: profilePictureUrl.url,
+    //coverImage: coverImage?.url || "",
     email,
     password,
     username: username.toLowerCase()

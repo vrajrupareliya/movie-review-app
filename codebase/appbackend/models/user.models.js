@@ -18,12 +18,7 @@ const userSchema = new Schema({
             unique: true,
             lowercase: true,
         },
-       fullname:{
-            type: String,
-            require: true,           
-            trim: true,
-            index: true, 
-        },
+       
         password:{
             type: String,
             require: [true, 'paasword is required']
