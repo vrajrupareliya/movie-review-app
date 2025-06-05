@@ -1,7 +1,6 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom'; // Import Navigate
+import { Routes, Route, Navigate, Link } from 'react-router-dom'; 
 import { useAuth } from './context/AuthContext';
-import { Link } from 'react-router-dom';
 
 // Import Components
 import Navbar from './components/Navbar';
@@ -11,8 +10,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import MovieDetailPage from './pages/MovieDetailPage'; // Import MovieDetailPage
 // We'll create these later
-// import MovieDetailPage from './pages/MovieDetailPage';
 // import UserProfilePage from './pages/UserProfilePage';
 // import FeedPage from './pages/FeedPage';
 // import DiaryPage from './pages/DiaryPage';
@@ -31,14 +30,14 @@ function App() {
 
   return (
     <>
-      <Navbar /> {/* Use the Navbar component */}
-      <main className="container" style={{ padding: '0 1rem', marginTop: '1rem' }}>
+      <Navbar /> 
+      <main className="container" style={{ padding: '0 1rem', marginTop: '1rem', maxWidth: '1200px', margin: '1.5rem auto' }}>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" replace />} />
           <Route path="/register" element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/" replace />} />
-          {/* <Route path="/movies/:movieId" element={<MovieDetailPage />} /> */}
+          <Route path="/movies/:movieId" element={<MovieDetailPage />} /> {/* MOVIE DETAIL ROUTE */}
           {/* <Route path="/users/:userId" element={<UserProfilePage />} /> */}
 
 
@@ -72,12 +71,10 @@ function App() {
             element={
               <ProtectedRoute>
                 <div>Your Profile Page (Protected)</div>
-                {/* Later, replace with actual UserProfilePage for 'me' */}
               </ProtectedRoute>
             } 
           />
 
-          /* Fallback for 404 Not Found */
           <Route path="*" element={<div><h2>404 - Page Not Found</h2><Link to="/">Go Home</Link></div>} />
         </Routes>
       </main>

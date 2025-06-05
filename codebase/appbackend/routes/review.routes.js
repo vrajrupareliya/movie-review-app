@@ -9,7 +9,7 @@ const REVIEW_ROUTER = Router({ mergeParams: true });
 
 //REVIEW_ROUTER.route("/").post(verifyJWT, addReview);
 
-REVIEW_ROUTER.route('/getReviews').get(getReviews); // This now supports pagination
+REVIEW_ROUTER.route('/:movieId/reviews').get(getReviews); // This now supports pagination
 REVIEW_ROUTER.route('/:movieId/addReview').post(verifyJWT, addReview);
 
 // Routes for getting, updating, and deleting a single review by its own ID

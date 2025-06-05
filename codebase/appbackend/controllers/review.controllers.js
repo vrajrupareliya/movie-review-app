@@ -92,7 +92,7 @@ const getReview = asynchandler( async (req, res, next) => {
     try {
         const review = await Review.findById(req.params.id).populate({
             path: 'user',
-            select: 'username profilePicture' // Added profilePicture
+             // Added profilePicture
         }).populate({
             path: 'movie',
             select: 'title posterUrl'
