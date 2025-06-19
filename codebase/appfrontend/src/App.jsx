@@ -10,15 +10,17 @@ import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import MovieDetailPage from './pages/MovieDetailPage'; // Import MovieDetailPage
+import MovieDetailPage from './pages/MovieDetailPage'; 
+import UserProfilePage from './pages/UserProfilePage'; 
+import WatchlistPage from './pages/WatchlistPage'; 
+
 // We'll create these later
-// import UserProfilePage from './pages/UserProfilePage';
 // import FeedPage from './pages/FeedPage';
 // import DiaryPage from './pages/DiaryPage';
-// import WatchlistPage from './pages/WatchlistPage';
+// import UserSettingsPage from './pages/UserSettingsPage.jsx'; 
 
 function App() {
-  const { loading, isAuthenticated } = useAuth();
+  const { loading, isAuthenticated } = useAuth(); // Removed user from here as it's not needed for routing logic
 
   if (loading) {
     return (
@@ -37,43 +39,29 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" replace />} />
           <Route path="/register" element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/" replace />} />
-          <Route path="/movies/:movieId" element={<MovieDetailPage />} /> {/* MOVIE DETAIL ROUTE */}
-          {/* <Route path="/users/:userId" element={<UserProfilePage />} /> */}
+          <Route path="/movies/:movieId" element={<MovieDetailPage />} /> 
+          <Route path="/users/:userId" element={<UserProfilePage />} /> 
 
 
-          {/* Protected Routes examples */}
+          {/* Protected Routes */}
           <Route 
             path="/feed" 
-            element={
-              <ProtectedRoute>
-                <div>Your Activity Feed (Protected)</div>
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><div>Your Activity Feed (Protected)</div></ProtectedRoute>} 
           />
           <Route 
             path="/diary" 
-            element={
-              <ProtectedRoute>
-                <div>Your Film Diary (Protected)</div>
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><div>Your Film Diary (Protected)</div></ProtectedRoute>} 
           />
-           <Route 
+          <Route 
             path="/watchlist" 
-            element={
-              <ProtectedRoute>
-                <div>Your Watchlist (Protected)</div>
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><WatchlistPage /></ProtectedRoute>} 
           />
           <Route 
             path="/profile/me" 
-            element={
-              <ProtectedRoute>
-                <div>Your Profile Page (Protected)</div>
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} 
           />
+          {/* <Route path="/profile/me/edit" element={<ProtectedRoute><UserSettingsPage /></ProtectedRoute>} /> */}
+
 
           <Route path="*" element={<div><h2>404 - Page Not Found</h2><Link to="/">Go Home</Link></div>} />
         </Routes>

@@ -3,8 +3,8 @@ import api from '../services/api';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-// A simple MovieCard component (can be moved to components/ later)
-function MovieCard({ movie }) {
+// MovieCard component - consider moving to components/MovieCard.jsx
+function MovieCard({ movie, onRemoveFromWatchlist, showRemoveButton = false }) { // Added props
   const cardStyle = {
     border: '1px solid #ddd',
     borderRadius: '8px',
@@ -13,6 +13,11 @@ function MovieCard({ movie }) {
     width: '200px',
     textAlign: 'center',
     boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+    textDecoration: 'none',
+    color: 'inherit',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   };
   const imgStyle = {
     width: '100%',
@@ -21,20 +26,36 @@ function MovieCard({ movie }) {
     borderRadius: '4px',
     marginBottom: '0.5rem',
   };
+  const removeButtonStyle = {
+    marginTop: '0.5rem',
+    padding: '0.5rem 0.8rem',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.8rem'
+  };
+
   return (
     <div style={cardStyle}>
-      <Link to={`/movies/${movie._id}`}>
-        <img 
-          src={movie.posterUrl || `https://placehold.co/200x280/60A5FA/FFFFFF?text=${encodeURIComponent(movie.title)}`} 
-          alt={movie.title} 
-          style={imgStyle} 
-          onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/200x280/60A5FA/FFFFFF?text=${encodeURIComponent(movie.title)}`; }}
-        />
-        <h3 style={{ fontSize: '1.1rem', margin: '0.5rem 0' }}>{movie.title}</h3>
+      <Link to={`/movies/${movie._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <img 
+            src={movie.posterUrl || `https://placehold.co/200x280/60A5FA/FFFFFF?text=${encodeURIComponent(movie.title)}`} 
+            alt={movie.title} 
+            style={imgStyle} 
+            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/200x280/60A5FA/FFFFFF?text=${encodeURIComponent(movie.title)}`; }}
+          />
+          <h3 style={{ fontSize: '1.1rem', margin: '0.5rem 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{movie.title}</h3>
+        <p style={{ fontSize: '0.9rem', color: '#555' }}>{movie.releaseYear}</p>
+        {movie.averageRating > 0 && (
+          <p style={{ fontSize: '0.9rem', color: 'orange' }}>⭐ {movie.averageRating.toFixed(1)} ({movie.reviewCount} reviews)</p>
+        )}
       </Link>
-      <p style={{ fontSize: '0.9rem', color: '#555' }}>{movie.releaseYear}</p>
-      {movie.averageRating > 0 && (
-        <p style={{ fontSize: '0.9rem', color: 'orange' }}>⭐ {movie.averageRating.toFixed(1)}/5 ({movie.reviewCount} reviews)</p>
+      {showRemoveButton && onRemoveFromWatchlist && (
+        <button onClick={() => onRemoveFromWatchlist(movie._id)} style={removeButtonStyle}>
+          Remove
+        </button>
       )}
     </div>
   );
@@ -52,10 +73,8 @@ function HomePage() {
       setLoading(true);
       setError('');
       try {
-        // Assuming your backend has a /movies/popular or similar endpoint
-        // If not, adjust to a general /movies endpoint
-        const response = await api.get('/movies/popular'); // Or just '/movies' if popular isn't implemented
-        setMovies(response.data.data || []); // Adjust based on your API response structure
+        const response = await api.get('/movies/popular'); 
+        setMovies(response.data.data || []); 
       } catch (err) {
         console.error("Failed to fetch movies:", err);
         setError('Failed to load movies. Please try again later.');
@@ -67,15 +86,15 @@ function HomePage() {
     fetchMovies();
   }, []);
 
-  if (loading) return <div>Loading movies...</div>;
-  if (error) return <div style={{ color: 'red' }}>{error}</div>;
+  if (loading) return <div style={{ textAlign: 'center', marginTop: '3rem' }}>Loading movies...</div>;
+  if (error) return <div style={{ color: 'red', textAlign: 'center', marginTop: '3rem'  }}>{error}</div>;
 
   return (
     <div>
-      <h1>Welcome to CineLog!</h1>
-      {isAuthenticated && user && <p>Hello, {user.username}! Ready to log some films?</p>}
+      <h1 style={{ textAlign: 'center', marginBottom: '1rem' }}>Welcome to CineLog!</h1>
+      {isAuthenticated && user && <p style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Hello, {user.username}! Ready to log some films?</p>}
       
-      <h2>Popular Movies</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Popular Movies</h2>
       {movies.length > 0 ? (
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
           {movies.map(movie => (
@@ -83,10 +102,12 @@ function HomePage() {
           ))}
         </div>
       ) : (
-        <p>No movies to display at the moment.</p>
+        <p style={{ textAlign: 'center' }}>No popular movies to display at the moment.</p>
       )}
     </div>
   );
 }
 
+
 export default HomePage;
+export { MovieCard }; 

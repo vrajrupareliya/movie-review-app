@@ -11,7 +11,6 @@ function Navbar() {
     navigate('/login');
   };
 
-  // Basic styling for the navbar
   const navStyle = {
     background: '#333',
     color: '#fff',
@@ -49,9 +48,10 @@ function Navbar() {
       <div>
         {isAuthenticated ? (
           <>
-            <Link to="/profile/me" style={linkStyle}>
-              {user?.profilePictureUrl ? (
-                <img src={user.profilePictureUrl} alt={user.username} style={{width: '30px', height: '30px', borderRadius: '50%', marginRight: '0.5rem', verticalAlign: 'middle'}} />
+            {/* The link to /profile/me is correct. App.jsx will route this properly. */}
+            <Link to="/profile/me" style={linkStyle}> 
+              {user?.profilePictureUrl && user.profilePictureUrl !== '[https://placehold.co/200x200/60A5FA/FFFFFF?text=User](https://placehold.co/200x200/60A5FA/FFFFFF?text=User)' ? ( 
+                <img src={user.profilePictureUrl} alt={user.username} style={{width: '30px', height: '30px', borderRadius: '50%', marginRight: '0.5rem', verticalAlign: 'middle', objectFit: 'cover'}} />
               ) : null}
               {user?.username || 'Profile'}
             </Link>
